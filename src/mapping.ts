@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt,Address } from "@graphprotocol/graph-ts"
 import {
   ECIONFTCore,
   Approval,
@@ -8,7 +8,24 @@ import {
   RoleRevoked,
   Transfer
 } from "../generated/ECIONFTCore/ECIONFTCore"
-import { ExampleEntity } from "../generated/schema"
+import { ExampleEntity, NFT,Account } from "../generated/schema"
+
+export function handleTransfer(event: Transfer): void {
+  if (event.params.tokenId.toString() == '') {
+    return
+  }
+
+  let contractAddress = event.address;
+  let nft = new NFT(event.params.tokenId.toString());
+  nft.tokenId = event.params.tokenId;
+
+  let erc721 = ECIONFTCore.bind(event.address);
+  let result = erc721.try_tokenURI(event.params.tokenId);
+  nft.partCode = result.value;
+  nft.contractAddress = contractAddress;
+  nft.save()
+  createOrLoadAccount(event.params.to);
+}
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -72,4 +89,16 @@ export function handleRoleGranted(event: RoleGranted): void {}
 
 export function handleRoleRevoked(event: RoleRevoked): void {}
 
-export function handleTransfer(event: Transfer): void {}
+
+export function createOrLoadAccount(id: Address): Account {
+  let account = Account.load(id.toHex())
+
+  if (account == null) {
+    account = new Account(id.toHex())
+    account.address = id
+  }
+
+  account.save()
+
+  return account
+}

@@ -1,5 +1,5 @@
 {
-  "name": "ecio",
+  "name": "Ecio-Indexer",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
@@ -7,7 +7,7 @@
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ artizno/ecio",
     "create-local": "graph create --node http://localhost:8020/ artizno/ecio",
     "remove-local": "graph remove --node http://localhost:8020/ artizno/ecio",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 artizno/ecio"
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5002 artizno/ecio"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.23.2",

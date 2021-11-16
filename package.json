@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ artizno/ecio",
-    "create-local": "graph create --node http://localhost:8020/ artizno/ecio",
-    "remove-local": "graph remove --node http://localhost:8020/ artizno/ecio",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5002 artizno/ecio"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ artizno/eciov2",
+    "create-local": "graph create --node http://localhost:8020/ artizno/eciov2",
+    "remove-local": "graph remove --node http://localhost:8020/ artizno/eciov2",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 artizno/eciov2"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.23.2",

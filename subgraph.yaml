@@ -4,9 +4,9 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: ECIONFTCore
-    network: bsc
+    network: testnet
     source:
-      address: "0x328bac8c81a947094f34651e6b0e548ebe35796b"
+      address: "0xf033c2cfdA3227327d8Fd94A8b253e979F725d79"
       abi: ECIONFTCore
     mapping:
       kind: ethereum/events
@@ -35,4 +35,4 @@ dataSources:
           handler: handleRoleRevoked
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/mapping.ts
+      file: ./src/nft.ts

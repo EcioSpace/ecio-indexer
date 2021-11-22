@@ -1,13 +1,13 @@
 {
-  "name": "Ecio-Indexer",
+  "name": "EcioIndexer",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ artizno/eciov2",
-    "create-local": "graph create --node http://localhost:8020/ artizno/eciov2",
-    "remove-local": "graph remove --node http://localhost:8020/ artizno/eciov2",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 artizno/eciov2"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ artizno/eciov1",
+    "create-local": "graph create --node http://localhost:8020/ artizno/eciov1",
+    "remove-local": "graph remove --node http://localhost:8020/ artizno/eciov1",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 artizno/eciov1"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.23.2",

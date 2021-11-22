@@ -1,18 +1,95 @@
-type ExampleEntity @entity {
+type Count @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  approved: Bytes! # address
+  orderTotal: Int!
+  orderSW: Int!
+  orderGF: Int!
+  orderBP: Int!
+  total: Int!
+  swTotal: Int!
+  gfTotal: Int!
+  bpTotal: Int!
+  salesTotal: Int!
 }
 
+enum NFTType @entity{
+  card
+  fagment
+}
 
-type NFT @entity {
+enum OrderStatus @entity {
+  open
+  sold
+  cancelled
+}
+
+enum Tribe @entity {
+  solarian
+  andromedian
+  scultpian
+  mercenary
+}
+
+enum FilterType @entity{
+  genomic
+  blueprint
+  character
+  attribute
+}
+
+enum Class @entity{
+  tanker
+  nuker
+  fighter
+  supporter
+  bionic
+  kinetic
+  electric
+  radiation
+  gravitation
+}
+
+enum Part @entity{
+  gear
+  drone
+  suite
+  bot
+  weapon
+}
+
+enum Rarity @entity{
+  common
+  rare
+  epic
+  legendary
+  limited
+}
+
+enum Camp @entity{
+  venus
+  titan
+  europa
+  earth
+  mars
+}
+
+enum Fagment @entity{
+  genomic
+  blueprint
+}
+ 
+type Order @entity {
   id: ID!
-  image: String
-  contractAddress: Bytes!
+  buyWithERC20Address: Bytes!
+  nft: NFT
+  nftAddress: Bytes!
   tokenId: BigInt!
-  partCode: String! 
-  owner: Account!
+  txHash: Bytes!
+  owner: Bytes!
+  buyer: Bytes
+  price: BigInt!
+  status: OrderStatus!
+  blockNumber: BigInt!
+  expiresAt: BigInt!
   createdAt: BigInt!
   updatedAt: BigInt!
 }
@@ -22,5 +99,47 @@ type Account @entity {
   address: Bytes!
   nfts: [NFT!] @derivedFrom(field: "owner")
 }
+
+
+type NFT @entity {
+  id: ID!
+  partCode: String! 
+  tokenId: BigInt!
+  contractAddress: Bytes!
+  owner: Account!
+  tokenURI: String!
+  nftType: NFTType!
+  level: BigInt
+  class: Class
+  part: Part
+  rarity: Rarity
+  camp: Camp
+  fagment: Fagment
+  tribe:Tribe
+
+  orders: [Order!] @derivedFrom(field: "nft") # History of all orders. Should only ever be ONE open order. all others must be cancelled or sold
+  activeOrder: Order
+
+  name: String
+  image: String
+
+  createdAt: BigInt!
+  updatedAt: BigInt!
+
+  codeGear: String
+  codeDrone: String
+  codeSuite: String
+  codeBot: String
+  codeWeapon: String
+
+  # search indexes
+  searchOrderStatus: OrderStatus
+  searchOrderPrice: BigInt
+  searchOrderExpiresAt: BigInt
+  searchOrderCreatedAt: BigInt
+  searchIsTribe: Tribe!
+  searchText: String
+}
+
 
 #https://github.com/decentraland/marketplace/blob/master/indexer/schema.graphql

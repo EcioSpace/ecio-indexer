@@ -161,8 +161,8 @@ export function handleTransfer(event: Transfer): void {
       prefix = "SB"
     } else if (nft.part == "weapon") {
       prefix = "SW"
-    } 
- 
+    }
+
     // Assign Class
     nft.nftClass = getNFTClass(prefix, code);
 
@@ -255,32 +255,19 @@ export function getCardRarity(code: string): string {
 }
 
 export function getEquipment(partCode: string): string {
-  //let code: string = GetCode(partCode, EQUIPMENT);
-  // gear
-  // drone
-  // suite
-  // bot
-  // weapon
-  // export const GEAR_PART = 3
-  // export const DRONE_PART = 4
-  // export const SUITE_PART = 5
-  // export const BOT_PART = 6
-  // export const WEAPON_PART = 8
-  // switch (code) {
-  //   case "03":
-  //     return "gear"
-  //   case "04":
-  //     return "drone"
-  //   case "05":
-  //     return "suite"
-  //   case "06":
-  //     return "bot"
-  //   case "08":
-  //     return "weapon"
-  //   default:
-  //     return ""
-  // }
-  return "SG"
+  let code: string = GetCode(partCode, EQUIPMENT);
+  if (code == "03") {
+    return "gear"
+  } else if (code == "04") {
+    return "drone"
+  } else if (code == "05") {
+    return "suite"
+  } else if (code == "06") {
+    return "bot"
+  } else if (code == "08") {
+    return "weapon"
+  }
+  return ""
 }
 
 export function getTribe(partCode: string): string {
@@ -336,7 +323,7 @@ export function GetCode(partCode: string, no: number): string {
   }
   return ""
 }
- 
+
 export function createOrLoadAccount(id: Address): Account {
   let account = Account.load(id.toHex())
 

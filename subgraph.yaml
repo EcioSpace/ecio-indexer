@@ -8,6 +8,7 @@ dataSources:
     source:
       address: "0xf033c2cfdA3227327d8Fd94A8b253e979F725d79"
       abi: ECIONFTCore
+      startBlock: 12304518
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -36,3 +37,37 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/nft.ts
+  # - kind: ethereum/contract
+  #   name: ECIOMarketplace
+  #   network: testnet
+  #   source:
+  #     address: "0xf033c2cfdA3227327d8Fd94A8b253e979F725d79"
+  #     abi: ECIONFTCore
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.5
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Approval
+  #       - ApprovalForAll
+  #       - RoleAdminChanged
+  #       - RoleGranted
+  #       - RoleRevoked
+  #       - Transfer
+  #     abis:
+  #       - name: ECIONFTCore
+  #         file: ./abis/ECIONFTCore.json
+  #     eventHandlers:
+  #       - event: Approval(indexed address,indexed address,indexed uint256)
+  #         handler: handleApproval
+  #       - event: ApprovalForAll(indexed address,indexed address,bool)
+  #         handler: handleApprovalForAll
+  #       - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+  #         handler: handleRoleAdminChanged
+  #       - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+  #         handler: handleRoleGranted
+  #       - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+  #         handler: handleRoleRevoked
+  #       - event: Transfer(indexed address,indexed address,indexed uint256)
+  #         handler: handleTransfer
+  #     file: ./src/nft.ts

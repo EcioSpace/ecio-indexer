@@ -9,7 +9,7 @@ import {
   Transfer
 } from "../generated/ECIONFTCore/ECIONFTCore"
 import { NFT, Account } from "../generated/schema"
-import { partData } from "./data/part"
+import { partData, Data } from "./data/part"
 import { Null } from './data/addresses'
 
 export const KINGDOM = 1
@@ -29,6 +29,11 @@ export const SUITE_PART = 5
 export const BOT_PART = 6
 export const WEAPON_PART = 8
 
+export const GEAR_CASE = "gear"
+export const DRONE_CASE = "drone"
+export const SUITE_CASE = "suite"
+export const BOT_CASE = "bot"
+export const WEAPON_CASE = "weapon"
 // id: ID! [Done]
 // partCode: String!  [Done]
 // tokenId: BigInt! [Done]
@@ -52,21 +57,40 @@ export const WEAPON_PART = 8
 // createdAt: BigInt! [Done]
 // updatedAt: BigInt! [Done]
 
-export function getNFTImage(partCode:string): string {
-  return ('https://metadata.ecio.space/card/'+partCode+'/image.png')
+export function getNFTImage(partCode: string): string {
+  return ('https://metadata.ecio.space/card/' + partCode + '/image.png')
 }
 
 export function isMint(event: Transfer): boolean {
   return event.params.from.toHexString() == Null
 }
 
-export function searchData(prefix: string, code: string): any {
+export function searchData(prefix: string, code: string): Data {
   for (let index: number = 0; index < partData.length; index++) {
     if (prefix + code == partData[index].CODE) {
       return partData[index];
     }
   }
-  return ""
+  return {
+    "CODE": "",
+    "RARITY": "",
+    "ELEMENT": "",
+    "NAME": "",
+    "ABILITY": "",
+    "INFORMATION": "",
+    "HP": 0,
+    "ATK": 0,
+    "DEF": 0,
+    "ASPD": 0,
+    "RANGE": 0,
+    "BONUS_HP": 0,
+    "BONUS_ATK": 0,
+    "BONUS_DEF": 0,
+    "BONUS_ASPD": 0,
+    "CRIT": 0,
+    "DODGE": 0,
+    "LIFESTEAL": 0
+  }
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -122,7 +146,7 @@ export function handleTransfer(event: Transfer): void {
     let code4 = GetCode(nft.partCode, DRONE);
     let code5 = GetCode(nft.partCode, SUITE);
     let code6 = GetCode(nft.partCode, BOT);
-    let sh = GetCode(nft.partCode, GENOME);
+    let sh: string = GetCode(nft.partCode, GENOME);
     let code8 = GetCode(nft.partCode, WEAPON);
     let code9 = GetCode(nft.partCode, RANKS);
     let code10 = GetCode(nft.partCode, EQUIPMENT);
@@ -131,15 +155,15 @@ export function handleTransfer(event: Transfer): void {
     nft.rarity = getCardRarity(nft.partCode)
 
     //Assign Card's Class 
-    nft.class = getClass("SH", sh);
+    nft.nftClass = getNFTClass("SH", sh);
 
     //Assign Camp
     // nft.camp
 
 
     //Assign NFT's Name
-    nft.name = getNFTName("SH",sh)
-    
+    nft.name = getNFTName("SH", sh)
+
 
   } else {
     //Assign Part
@@ -150,7 +174,7 @@ export function handleTransfer(event: Transfer): void {
 
     //Assign Card's Class 
     let prefix: string
-    let code = GetCode(nft.partCode, EQUIPMENT);
+    let code: string = GetCode(nft.partCode, EQUIPMENT);
     switch (nft.part) {
       case "gear":
         prefix = "SG"
@@ -173,13 +197,13 @@ export function handleTransfer(event: Transfer): void {
     }
 
     // Assign Class
-    nft.class = getClass(prefix, code);
+    nft.nftClass = getNFTClass(prefix, code);
 
     //Assign Name
     nft.name = getNFTName(prefix, code)
   }
 
-  if(isMint(event)){
+  if (isMint(event)) {
     nft.createdAt = event.block.timestamp
   }
 
@@ -202,7 +226,7 @@ export function handleTransfer(event: Transfer): void {
 export function getEquipmentRarity(code: string, equipment: string): string {
   let prefix: string
   switch (equipment) {
-    case "gear":
+    case GEAR_CASE:
       prefix = "SG"
       break;
     case "drone":
@@ -214,7 +238,7 @@ export function getEquipmentRarity(code: string, equipment: string): string {
     case "bot":
       prefix = "SB"
       break;
-    case "weapon":
+    case WEAPON_CASE:
       prefix = "SW"
       break;
     default:
@@ -222,7 +246,7 @@ export function getEquipmentRarity(code: string, equipment: string): string {
       break;
   }
 
-  for (let index = 0; index < partData.length; index++) {
+  for (let index: number = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == prefix + code) {
       return partData[index].RARITY.toLowerCase()
@@ -232,20 +256,20 @@ export function getEquipmentRarity(code: string, equipment: string): string {
 }
 
 export function getNFTName(prefix: string, code: string): string {
-    for (let index = 0; index < partData.length; index++) {
-      const pd = partData[index];
-      if (pd.CODE == prefix + code) {
-        return partData[index].NAME.toLowerCase()
-      }
-    }
-    return ""
-  }
-
-export function getClass(prefix: string, code: string): string {
-
-  for (let index = 0; index < partData.length; index++) {
+  for (let index: number = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == prefix + code) {
+      return partData[index].NAME.toLowerCase()
+    }
+  }
+  return ""
+}
+
+export function getNFTClass(prefix: string, code: string): string {
+
+  for (let index: number = 0; index < partData.length; index++) {
+    const pd = partData[index];
+    if (pd.CODE.toString() == (prefix + code).toString()) {
       return partData[index].ELEMENT.toLowerCase()
     }
   }
@@ -253,7 +277,7 @@ export function getClass(prefix: string, code: string): string {
 }
 export function getCardRarity(code: string): string {
 
-  for (let index = 0; index < partData.length; index++) {
+  for (let index: number = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == "SH" + code) {
       return partData[index].RARITY.toLowerCase()
@@ -263,7 +287,7 @@ export function getCardRarity(code: string): string {
 }
 
 export function getEquipment(partCode: string): string {
-  let code = GetCode(partCode, EQUIPMENT);
+  let code: string = GetCode(partCode, EQUIPMENT);
   // gear
   // drone
   // suite
@@ -291,7 +315,7 @@ export function getEquipment(partCode: string): string {
 }
 
 export function getTribe(partCode: string): string {
-  let code = GetCode(partCode, KINGDOM);
+  let code: string = GetCode(partCode, KINGDOM);
   switch (code) {
     case "00":
       return "solarian"
@@ -306,7 +330,7 @@ export function getTribe(partCode: string): string {
   }
 }
 export function getNFTType(partCode: string): string {
-  let code = GetCode(partCode, 0);
+  let code: string = GetCode(partCode, 0);
   switch (code) {
     case "00": case "01": case "02": case "03": case "04": case "05":
       return "fagment"
@@ -318,7 +342,7 @@ export function getNFTType(partCode: string): string {
 }
 
 export function getLevel(partCode: string): number {
-  let code = GetCode(partCode, 9);
+  let code: string = GetCode(partCode, 9);
   switch (code) {
     case "00":
       return 1;
@@ -335,11 +359,11 @@ export function getLevel(partCode: string): number {
   }
 }
 
-export function GetCode(partCode: any, no: any): string {
-  var count: any;
+export function GetCode(partCode: string, no: number): string {
+  var count: number = 0;
   for (let i: number = partCode.length - 1; i >= 0; i--) {
     if (count == no) {
-      return `${partCode[i - 1]}${(partCode[i])}`
+      return `${partCode.at(i - 1)}${(partCode.at(i))}`
     }
     i--;
     count++;

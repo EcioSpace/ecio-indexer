@@ -1,4 +1,26 @@
-export let partData = [
+
+export class Data {
+    CODE: string;
+    RARITY: string;
+    ELEMENT: string;
+    NAME: string;
+    ABILITY: string;
+    INFORMATION: string;
+    HP: number;
+    ATK: number;
+    DEF: number;
+    ASPD: number;
+    RANGE: number;
+    BONUS_HP: number;
+    BONUS_ATK: number;
+    BONUS_DEF: number;
+    BONUS_ASPD: number;
+    CRIT: number;
+    DODGE: number;
+    LIFESTEAL: number;
+}
+
+export let partData: Data[] = [
     {
       "CODE": "SH00",
       "RARITY": "Common",

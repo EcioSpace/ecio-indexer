@@ -36,7 +36,7 @@ enum FilterType @entity{
   attribute
 }
 
-enum Class @entity{
+enum NFTClass @entity{
   tanker
   nuker
   fighter
@@ -110,7 +110,7 @@ type NFT @entity {
   tokenURI: String!
   nftType: NFTType!
   level: BigInt
-  class: Class
+  nftClass: NFTClass
   part: Part
   rarity: Rarity
   camp: Camp

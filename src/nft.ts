@@ -112,20 +112,25 @@ export function handleTransfer(event: Transfer): void {
 
   //Assign Part
   if (nft.nftType == "card") {
-
     nft.level = getLevel(nft.partCode)
-    // let code0 = GetCode(nft.partCode, 0);
-    // let code1 = GetCode(nft.partCode, KINGDOM);
+    // let kd = GetCode(nft.partCode, KINGDOM);
     nft.tribe = getTribe(nft.partCode)
-    let st = GetCode(nft.partCode, TRAINING);
-    let code3 = GetCode(nft.partCode, GEAR);
-    let code4 = GetCode(nft.partCode, DRONE);
-    let code5 = GetCode(nft.partCode, SUITE);
-    let code6 = GetCode(nft.partCode, BOT);
+    // let st = GetCode(nft.partCode, TRAINING);
+    let sg = GetCode(nft.partCode, GEAR);
+    let sd = GetCode(nft.partCode, DRONE);
+    let ss = GetCode(nft.partCode, SUITE);
+    let sb = GetCode(nft.partCode, BOT);
     let sh: string = GetCode(nft.partCode, GENOME);
-    let code8 = GetCode(nft.partCode, WEAPON);
-    let code9 = GetCode(nft.partCode, RANKS);
-    let code10 = GetCode(nft.partCode, EQUIPMENT);
+    let sw = GetCode(nft.partCode, WEAPON);
+    // let code9 = GetCode(nft.partCode, RANKS);
+    // let code10 = GetCode(nft.partCode, EQUIPMENT);
+
+    nft.codeGear = sg
+    nft.codeDrone = sd
+    nft.codeSuite = ss
+    nft.codeBot = sb
+    nft.codeWeapon = sw
+  
 
     //Assign Card's Part
     nft.rarity = getCardRarity(nft.partCode)
@@ -135,7 +140,6 @@ export function handleTransfer(event: Transfer): void {
 
     //Assign Camp
     // nft.camp
-
 
     //Assign NFT's Name
     nft.name = getNFTName("SH", sh)
@@ -185,22 +189,8 @@ export function handleTransfer(event: Transfer): void {
   createOrLoadAccount(event.params.to);
 }
 
-// gear
-// drone
-// suite
-// bot
-// weapon
-
 export function getEquipmentRarity(code: string, equipment: string | null): string {
-
-  let gear: string = "gear";
-  let drone: string = "drone";
-  let suite: string = "suite";
-  let bot: string = "bot";
-  let weapon: string = "weapon";
   let prefix: string = "";
-
-
   if (equipment == "gear") {
     prefix = "SG"
   } else if (equipment == "drone") {

@@ -81,6 +81,10 @@ export function handleTransfer(event: Transfer): void {
   //Assign NFT Type
   nft.nftType = getNFTType(nft.partCode)
 
+  //Assign tokenURI
+  nft.tokenURI = erc721.tokenURI(nft.tokenId);
+
+
   //Assign Class
   //limitation
 
@@ -182,17 +186,23 @@ export function toArray(mesage: string | null): string[] {
 }
 
 
-export function getEquipmentRarity(code: string, equipment: string | null): string {
+export function getEquipmentRarity(partCode: string, equipment: string | null): string {
   let prefix: string = "";
+  let code: string = "";
   if (equipment == "gear") {
+    code = GetCode(partCode, GEAR_PART);
     prefix = "SG"
   } else if (equipment == "drone") {
+    code = GetCode(partCode, DRONE_PART);
     prefix = "SD"
   } else if (equipment == "suite") {
+    code = GetCode(partCode, SUITE_PART);
     prefix = "SS"
   } else if (equipment == "bot") {
+    code = GetCode(partCode, BOT_PART);
     prefix = "SB"
   } else if (equipment == "weapon") {
+    code = GetCode(partCode, WEAPON_PART);
     prefix = "SW"
   }
 

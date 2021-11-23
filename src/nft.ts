@@ -125,7 +125,7 @@ export function handleTransfer(event: Transfer): void {
     // nft.camp
 
     //Assign NFT's Name
-    nft.name = getNFTName("SH", sh)
+    nft.name = getNFTName("SH", sh);
 
 
   } else {
@@ -163,7 +163,7 @@ export function handleTransfer(event: Transfer): void {
       nft.nftClass = getNFTClass(prefix, code);
 
       //Assign Name
-      nft.name = getNFTName(prefix, code)
+      nft.name = getNFTName(prefix, code);
 
 
     } else { //Genomic Fagment
@@ -182,7 +182,7 @@ export function handleTransfer(event: Transfer): void {
       nft.nftClass = getNFTClass("SH", code);
 
       //Assign Name
-      nft.name = getNFTName("SH", code)
+      nft.name = getNFTName("SH", code);
     }
 
   }
@@ -237,7 +237,7 @@ export function getEquipmentRarity(partCode: string, equipment: string | null): 
   for (let index = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == prefix + code) {
-      return pd.RARITY.toLowerCase()
+      return pd.RARITY.toLowerCase().trim();
     }
   }
   return ""
@@ -247,7 +247,7 @@ export function getNFTName(prefix: string, code: string): string {
   for (let index = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == prefix + code) {
-      return partData[index].NAME.toLowerCase()
+      return partData[index].NAME.toLowerCase().trim();
     }
   }
   return ""
@@ -258,7 +258,7 @@ export function getNFTClass(prefix: string, code: string): string {
   for (let index = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE.toString() == (prefix + code).toString()) {
-      return partData[index].ELEMENT.toLowerCase()
+      return partData[index].ELEMENT.toLowerCase().trim();
     }
   }
   return ""
@@ -268,7 +268,7 @@ export function getCardRarity(code: string): string {
   for (let index = 0; index < partData.length; index++) {
     const pd = partData[index];
     if (pd.CODE == "SH" + code) {
-      return partData[index].RARITY.toLowerCase()
+      return partData[index].RARITY.toLowerCase().trim();
     }
   }
   return ""

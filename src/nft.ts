@@ -1,17 +1,12 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts"
 import {
   ECIONFTCore,
-  Approval,
-  ApprovalForAll,
-  RoleAdminChanged,
-  RoleGranted,
-  RoleRevoked,
   Transfer
 } from "../generated/ECIONFTCore/ECIONFTCore"
 import { NFT, Account } from "../generated/schema"
 import { partData, Data } from "./data/part"
 import { Null } from './data/addresses'
-
+import { log } from '@graphprotocol/graph-ts'
 export const KINGDOM = 1
 export const TRAINING = 2
 export const GEAR = 3
@@ -34,28 +29,6 @@ export const DRONE_CASE = "drone"
 export const SUITE_CASE = "suite"
 export const BOT_CASE = "bot"
 export const WEAPON_CASE = "weapon"
-// id: ID! [Done]
-// partCode: String!  [Done]
-// tokenId: BigInt! [Done]
-// contractAddress: Bytes! [Done]
-// owner: Account!   [Done]
-// tokenURI: String!  [Done]
-// nftType: NFTType! [Done]
-// level: BigInt [Done]
-// class: Class [Done]
-// Tribe: [Done]
-// part: Part  [Done]
-// rarity: Rarity [] [Done]
-// camp: Camp [Requirement No Clear]
-
-// orders: [Order!] @derivedFrom(field: "nft") # History of all orders. Should only ever be ONE open order. all others must be cancelled or sold
-// activeOrder: Order
-
-// name: String //[Done]
-// image: String [Done]
-
-// createdAt: BigInt! [Done]
-// updatedAt: BigInt! [Done]
 
 export function getNFTImage(partCode: string): string {
   return ('https://metadata.ecio.space/card/' + partCode + '/image.png')
@@ -80,29 +53,30 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
+  event.params.tokenId.toString()
+
   let contractAddress = event.address;
+  log.debug("contractAddress:{}", [event.address.toHexString()]);
 
   let nft = new NFT(event.params.tokenId.toString());
 
   //Assign TokenId
   nft.tokenId = event.params.tokenId;
+  log.debug("tokenId:{}", [nft.tokenId.toString()]);
 
   let erc721 = ECIONFTCore.bind(event.address);
 
   //Find Token Info
-  let result = erc721.tokenInfo(event.params.tokenId);
+  let result = erc721.tokenInfo(nft.tokenId);
   nft.partCode = result.value0;
+  log.debug("partCode:{}", [nft.partCode]);
 
   //Assign Smart Contract
   nft.contractAddress = contractAddress;
 
-  //Assign NFT's Image
-  let imageURL = erc721.tokenURI(event.params.tokenId);
-  nft.image = imageURL
-
 
   //Assign Owner Address
-  nft.owner = event.params.to.toHex();
+  nft.owner = event.params.to.toHexString();
 
   //Assign NFT Type
   nft.nftType = getNFTType(nft.partCode)
@@ -112,9 +86,14 @@ export function handleTransfer(event: Transfer): void {
 
   //Assign Part
   if (nft.nftType == "card") {
-    nft.level = getLevel(nft.partCode)
-    // let kd = GetCode(nft.partCode, KINGDOM);
-    nft.tribe = getTribe(nft.partCode)
+
+    nft.level = getLevelNumber(nft.partCode)
+  
+    let kd = GetCode(nft.partCode, KINGDOM);
+    log.debug("kd:{}", [kd]);
+ 
+    nft.tribe = getTribeName(kd)
+
     // let st = GetCode(nft.partCode, TRAINING);
     let sg = GetCode(nft.partCode, GEAR);
     let sd = GetCode(nft.partCode, DRONE);
@@ -130,11 +109,11 @@ export function handleTransfer(event: Transfer): void {
     nft.codeSuite = ss
     nft.codeBot = sb
     nft.codeWeapon = sw
-  
+
 
     //Assign Card's Part
-    nft.rarity = getCardRarity(nft.partCode)
-
+    nft.rarity = getCardRarity(kd)
+  
     //Assign Card's Class 
     nft.nftClass = getNFTClass("SH", sh);
 
@@ -146,10 +125,11 @@ export function handleTransfer(event: Transfer): void {
 
 
   } else {
-    //Assign Part
-    nft.part = getEquipment(nft.partCode)
 
-    //Assign Equipemnt's Part
+    // //Assign Part
+    nft.part = getEquipmentName(nft.partCode)
+
+    // //Assign Equipemnt's Part
     nft.rarity = getEquipmentRarity(nft.partCode, nft.part)
 
     //Assign Card's Class 
@@ -167,6 +147,8 @@ export function handleTransfer(event: Transfer): void {
       prefix = "SW"
     }
 
+    log.debug("prefix,code:{}", [prefix, code]);
+
     // Assign Class
     nft.nftClass = getNFTClass(prefix, code);
 
@@ -178,16 +160,27 @@ export function handleTransfer(event: Transfer): void {
     nft.createdAt = event.block.timestamp
   }
 
+  log.debug("isMint:{}", [isMint(event).toString()]);
+
   nft.updatedAt = event.block.timestamp
 
   //Assign NFT's Image
   nft.image = getNFTImage(nft.partCode)
+
+  log.debug("image:{}", [nft.image.toString()]);
+
 
   nft.save()
 
   //Update Owner
   createOrLoadAccount(event.params.to);
 }
+
+
+export function toArray(mesage: string | null): string[] {
+  return mesage ? [mesage] : [];
+}
+
 
 export function getEquipmentRarity(code: string, equipment: string | null): string {
   let prefix: string = "";
@@ -244,7 +237,7 @@ export function getCardRarity(code: string): string {
   return ""
 }
 
-export function getEquipment(partCode: string): string {
+export function getEquipmentName(partCode: string): string {
   let code: string = GetCode(partCode, EQUIPMENT);
   if (code == "03") {
     return "gear"
@@ -260,7 +253,7 @@ export function getEquipment(partCode: string): string {
   return ""
 }
 
-export function getTribe(partCode: string): string {
+export function getTribeName(partCode: string): string {
   let code: string = GetCode(partCode, KINGDOM);
   if (code == "00") {
     return "solarian"
@@ -286,7 +279,7 @@ export function getNFTType(partCode: string): string {
 
 }
 
-export function getLevel(partCode: string): BigInt {
+export function getLevelNumber(partCode: string): BigInt {
   let code: string = GetCode(partCode, 9);
   if (code == "00") {
     return new BigInt(1);

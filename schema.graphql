@@ -115,13 +115,14 @@ type NFT @entity {
   rarity: Rarity
   camp: Camp
   fagment: Fagment
-  tribe:Tribe
+  tribe: Tribe
+ 
 
   orders: [Order!] @derivedFrom(field: "nft") # History of all orders. Should only ever be ONE open order. all others must be cancelled or sold
   activeOrder: Order
 
   name: String
-  image: String
+  image: String!
 
   createdAt: BigInt!
   updatedAt: BigInt!
@@ -137,7 +138,6 @@ type NFT @entity {
   searchOrderPrice: BigInt
   searchOrderExpiresAt: BigInt
   searchOrderCreatedAt: BigInt
-  searchIsTribe: Tribe!
   searchText: String
 }
 

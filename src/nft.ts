@@ -92,10 +92,10 @@ export function handleTransfer(event: Transfer): void {
   if (nft.nftType == "card") {
 
     nft.level = getLevelNumber(nft.partCode)
-  
+
     let kd = GetCode(nft.partCode, KINGDOM);
     log.debug("kd:{}", [kd]);
- 
+
     nft.tribe = getTribeName(kd)
 
     // let st = GetCode(nft.partCode, TRAINING);
@@ -117,7 +117,7 @@ export function handleTransfer(event: Transfer): void {
 
     //Assign Card's Part
     nft.rarity = getCardRarity(kd)
-  
+
     //Assign Card's Class 
     nft.nftClass = getNFTClass("SH", sh);
 
@@ -130,34 +130,61 @@ export function handleTransfer(event: Transfer): void {
 
   } else {
 
-    // //Assign Part
-    nft.part = getEquipmentName(nft.partCode)
+    let nftCode = GetCode(nft.partCode, 0);
 
-    // //Assign Equipemnt's Part
-    nft.rarity = getEquipmentRarity(nft.partCode, nft.part)
+    if (nftCode == "00" || nftCode == "01" || nftCode == "02") {//Blueprint Fagment
 
-    //Assign Card's Class 
-    let prefix: string = ""
-    let code: string = GetCode(nft.partCode, EQUIPMENT);
-    if (nft.part == "gear") {
-      prefix = "SG"
-    } else if (nft.part == "drone") {
-      prefix = "SD"
-    } else if (nft.part == "suite") {
-      prefix = "SS"
-    } else if (nft.part == "bot") {
-      prefix = "SB"
-    } else if (nft.part == "weapon") {
-      prefix = "SW"
+      nft.fagment = "blueprint"
+
+      //Assign Part
+      nft.part = getEquipmentName(nft.partCode)
+
+      //Assign Equipemnt's Part
+      nft.rarity = getEquipmentRarity(nft.partCode, nft.part)
+
+      //Assign Card's Class
+      let prefix: string = ""
+      let code: string = GetCode(nft.partCode, EQUIPMENT);
+      if (nft.part == "gear") {
+        prefix = "SG"
+      } else if (nft.part == "drone") {
+        prefix = "SD"
+      } else if (nft.part == "suite") {
+        prefix = "SS"
+      } else if (nft.part == "bot") {
+        prefix = "SB"
+      } else if (nft.part == "weapon") {
+        prefix = "SW"
+      }
+
+      log.debug("prefix,code:{}", [prefix, code]);
+
+      // Assign Class
+      nft.nftClass = getNFTClass(prefix, code);
+
+      //Assign Name
+      nft.name = getNFTName(prefix, code)
+
+
+    } else { //Genomic Fagment
+
+
+      nft.fagment = "genomic"
+
+      let code: string = GetCode(nft.partCode, GENOME);
+
+      nft.codeGenome = code;
+
+      //Assign Equipemnt's Part
+      nft.rarity = getCardRarity(code)
+
+      // Assign Class
+      nft.nftClass = getNFTClass("SH", code);
+
+      //Assign Name
+      nft.name = getNFTName("SH", code)
     }
 
-    log.debug("prefix,code:{}", [prefix, code]);
-
-    // Assign Class
-    nft.nftClass = getNFTClass(prefix, code);
-
-    //Assign Name
-    nft.name = getNFTName(prefix, code)
   }
 
   if (isMint(event)) {

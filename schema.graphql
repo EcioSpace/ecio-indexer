@@ -132,6 +132,7 @@ type NFT @entity {
   codeSuite: String
   codeBot: String
   codeWeapon: String
+  codeGenome: String
 
   # search indexes
   searchOrderStatus: OrderStatus

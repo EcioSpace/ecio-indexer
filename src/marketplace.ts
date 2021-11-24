@@ -34,11 +34,15 @@ export function handleOrderCreated(event: OrderCreated): void {
 
     order.save()
 
-    cancelActiveOrder(nft!, event.block.timestamp)
+    if (order.status == "open") {
+      order.status = "cancelled"
+      order.updatedAt = event.block.timestamp
+      order.save()
+    }
 
     nft.updatedAt = event.block.timestamp
-    nft = updateNFTOrderProperties(nft!, order)
-    nft?.save()
+    nft = updateNFTOrderProperties(nft, order)
+    nft.save()
 
   }
 
@@ -61,7 +65,7 @@ export function handleOrderCanceled(event: OrderCanceled): void {
     order.save()
 
     nft.updatedAt = event.block.timestamp
-    nft = updateNFTOrderProperties(nft!, order!)
+    nft = updateNFTOrderProperties(nft, order)
     nft.save()
   }
 }
@@ -91,7 +95,7 @@ export function handleOrderSuccessful(event: OrderSuccessful): void {
 
   nft.owner = event.params.owner.toHex()
   nft.updatedAt = event.block.timestamp
-  nft = updateNFTOrderProperties(nft!, order!)
+  nft = updateNFTOrderProperties(nft, order)
   nft.save()
 }
 
@@ -122,19 +126,4 @@ export function clearNFTOrderProperties(nft: NFT): NFT {
   nft.searchOrderCreatedAt = null
   nft.searchOrderExpiresAt = null
   return nft
-}
-
-export function cancelActiveOrder(nft: any, now: BigInt): boolean {
-  let oldOrder = Order.load(nft.activeOrder.toString())
-  if (oldOrder != null && oldOrder.status == "open") {
-    // Here we are setting old orders as cancelled, because the smart contract allows new orders to be created
-    // and they just overwrite them in place. But the subgraph stores all orders ever
-    // you can also overwrite ones that are expired
-    oldOrder.status = "cancelled"
-    oldOrder.updatedAt = now
-    oldOrder.save()
-
-    return true
-  }
-  return false
 }

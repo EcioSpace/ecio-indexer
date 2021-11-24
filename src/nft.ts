@@ -7,6 +7,7 @@ import { NFT, Account } from "../generated/schema"
 import { partData, Data } from "./data/part"
 import { Null } from './data/addresses'
 import { log } from '@graphprotocol/graph-ts'
+import { getNFTId } from './modules/nft'
 export const KINGDOM = 1
 export const TRAINING = 2
 export const GEAR = 3
@@ -53,12 +54,14 @@ export function handleTransfer(event: Transfer): void {
     return
   }
 
+  let nftId = getNFTId(event.address.toHexString(),event.params.tokenId.toString())
+
   event.params.tokenId.toString()
 
   let contractAddress = event.address;
   log.debug("contractAddress:{}", [event.address.toHexString()]);
 
-  let nft = new NFT(event.params.tokenId.toString());
+  let nft = new NFT(nftId);
 
   //Assign TokenId
   nft.tokenId = event.params.tokenId;
@@ -132,9 +135,9 @@ export function handleTransfer(event: Transfer): void {
 
     let nftCode = GetCode(nft.partCode, 0);
 
-    if (nftCode == "00" || nftCode == "01" || nftCode == "02") {//Blueprint Fagment
+    if (nftCode == "00" || nftCode == "01" || nftCode == "02") {//Blueprint Fragment
 
-      nft.fagment = "blueprint"
+      nft.fragment = "blueprint"
 
       //Assign Part
       nft.part = getEquipmentName(nft.partCode)
@@ -166,10 +169,10 @@ export function handleTransfer(event: Transfer): void {
       nft.name = getNFTName(prefix, code);
 
 
-    } else { //Genomic Fagment
+    } else { //Genomic Fragment
 
 
-      nft.fagment = "genomic"
+      nft.fragment = "genomic"
 
       let code: string = GetCode(nft.partCode, GENOME);
 
@@ -307,7 +310,7 @@ export function getNFTType(partCode: string): string {
 
   let code: string = GetCode(partCode, 0);
   if (code == "00" || code == "01" || code == "02" || code == "03" || code == "04" || code == "05") {
-    return "fagment"
+    return "fragment"
   } else if ("06") {
     return "card"
   }

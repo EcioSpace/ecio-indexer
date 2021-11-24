@@ -13,7 +13,7 @@ type Count @entity {
 
 enum NFTType @entity{
   card
-  fagment
+  fragment
 }
 
 enum OrderStatus @entity {
@@ -72,7 +72,7 @@ enum Camp @entity{
   mars
 }
 
-enum Fagment @entity{
+enum Fragment @entity{
   genomic
   blueprint
 }
@@ -89,7 +89,7 @@ type Order @entity {
   price: BigInt!
   status: OrderStatus!
   blockNumber: BigInt!
-  expiresAt: BigInt!
+  #expiresAt: BigInt!
   createdAt: BigInt!
   updatedAt: BigInt!
 }
@@ -114,7 +114,7 @@ type NFT @entity {
   part: Part
   rarity: Rarity
   camp: Camp
-  fagment: Fagment
+  fragment: Fragment
   tribe: Tribe
  
 

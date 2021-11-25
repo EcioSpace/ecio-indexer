@@ -4,7 +4,7 @@ type Count @entity {
   orderSW: Int!
   orderGF: Int!
   orderBP: Int!
-  total: Int!
+  nftTotal: Int!
   swTotal: Int!
   gfTotal: Int!
   bpTotal: Int!

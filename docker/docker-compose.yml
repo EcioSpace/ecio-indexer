@@ -17,8 +17,8 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'testnet:http://host.docker.internal:7545'
-      GRAPH_LOG: info
+      ethereum: 'bsc:https://data-seed-prebsc-1-s1.binance.org:8545'
+      GRAPH_LOG: debug
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:

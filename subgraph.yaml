@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 0.0.3
 schema:
   file: ./schema.graphql
 dataSources:
@@ -6,70 +6,76 @@ dataSources:
     name: ECIONFTCore
     network: bsc
     source:
-      address: "0x328Bac8C81A947094f34651e6B0e548EBe35796B"
       abi: ECIONFTCore
-      startBlock: 12877661 
+      # address: "0x5bAa6FaF5BeB33D154598560f04196074954bD5C" # Mainnet
+      # startBlock: 14425941                                  # Mainnet
+      address: "0x5bAa6FaF5BeB33D154598560f04196074954bD5C"   # Testnet
+      startBlock: 14425941                                    # Testnet
+
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        # - Approval
-        # - ApprovalForAll
-        # - RoleAdminChanged
-        # - RoleGranted
-        # - RoleRevoked
-        # - Transfer
         - NFT
         - Account 
+        - Order
       abis:
         - name: ECIONFTCore
           file: ./abis/ECIONFTCore.json
       eventHandlers:
-        # - event: Approval(indexed address,indexed address,indexed uint256)
-        #   handler: handleApproval
-        # - event: ApprovalForAll(indexed address,indexed address,bool)
-        #   handler: handleApprovalForAll
-        # - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-        #   handler: handleRoleAdminChanged
-        # - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-        #   handler: handleRoleGranted
-        # - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-        #   handler: handleRoleRevoked
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/nft.ts
-  # - kind: ethereum/contract
-  #   name: ECIOMarketplace
-  #   network: testnet
-  #   source:
-  #     address: "0xf033c2cfdA3227327d8Fd94A8b253e979F725d79"
-  #     abi: ECIONFTCore
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.5
-  #     language: wasm/assemblyscript
-  #     entities:
-  #       - Approval
-  #       - ApprovalForAll
-  #       - RoleAdminChanged
-  #       - RoleGranted
-  #       - RoleRevoked
-  #       - Transfer
-  #     abis:
-  #       - name: ECIONFTCore
-  #         file: ./abis/ECIONFTCore.json
-  #     eventHandlers:
-  #       - event: Approval(indexed address,indexed address,indexed uint256)
-  #         handler: handleApproval
-  #       - event: ApprovalForAll(indexed address,indexed address,bool)
-  #         handler: handleApprovalForAll
-  #       - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-  #         handler: handleRoleAdminChanged
-  #       - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-  #         handler: handleRoleGranted
-  #       - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-  #         handler: handleRoleRevoked
-  #       - event: Transfer(indexed address,indexed address,indexed uint256)
-  #         handler: handleTransfer
-  #     file: ./src/nft.ts
+
+  - kind: ethereum/contract
+    name: Market
+    network: bsc
+    source:
+      abi: Market 
+      address: "0xb129905994e27b10903e639Cda8DD46DBD8e666b" # Testnet
+      startBlock: 14428178                                  # Testnet
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Order
+        - NFT
+        - Account 
+      abis:
+        - name: Market
+          file: ./abis/Market.json
+      eventHandlers:
+        - event: OrderCreated(indexed address,indexed uint256,indexed uint256,address,address,uint256,address,bool,bool)
+          handler: handleOrderCreated
+        - event: OrderSuccessful(indexed address,indexed uint256,indexed uint256,address,address,uint256,address,bool,bool)
+          handler: handleOrderSuccessful
+        - event: OrderCanceled(indexed address,indexed uint256,indexed uint256,address,address,uint256,address,bool,bool)
+          handler: handleOrderCanceled     
+      file: ./src/marketplace.ts
+
+  - kind: ethereum/contract
+    name: MysteryBox
+    network: bsc
+    source:
+      abi: MysteryBox
+      address: "0xb129905994e27b10903e639Cda8DD46DBD8e666b" # Testnet
+      startBlock: 14428178                                  # Testnet
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - NFT
+        - Account
+      abis:
+        - name: MysteryBox
+          file: ./abis/MysteryBox.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+
+      file: ./src/mysteryBox.ts

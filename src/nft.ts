@@ -63,6 +63,8 @@ export function handleTransfer(event: Transfer): void {
 
   let nft = new NFT(nftId);
 
+  nft.isMysteryBox = false;
+
   //Assign TokenId
   nft.tokenId = event.params.tokenId;
   log.debug("tokenId:{}", [nft.tokenId.toString()]);

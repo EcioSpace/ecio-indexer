@@ -118,7 +118,7 @@ type NFT @entity {
   camp: Camp
   fragment: Fragment
   tribe: Tribe
- 
+  amount: BigInt!
 
   orders: [Order!] @derivedFrom(field: "nft") # History of all orders. Should only ever be ONE open order. all others must be cancelled or sold
   activeOrder: Order

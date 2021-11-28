@@ -52,7 +52,7 @@ export function UpdateNFT(tokenId: BigInt, contractAddress: Address, to: Address
     if (from.toHexString() != Null) {
         let fromNFTId = getNFTId(contractAddress.toHexString(), tokenId.toString()) + "-" + from.toHexString()
         let fromNFT = NFT.load(fromNFTId)!;
-        let fromAmount = nft.amount.toI64() + value.toI64()
+        let fromAmount = nft.amount.toI64() - value.toI64();
         fromNFT.amount = BigInt.fromI64(fromAmount);
         if (fromAmount == 0) {
             fromNFT.owner = Null;

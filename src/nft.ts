@@ -64,6 +64,7 @@ export function handleTransfer(event: Transfer): void {
   let nft = new NFT(nftId);
 
   nft.isMysteryBox = false;
+  nft.amount = BigInt.fromI32(1);
 
   //Assign TokenId
   nft.tokenId = event.params.tokenId;
